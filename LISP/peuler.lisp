@@ -18,7 +18,7 @@
         for p2 = 0 then p1
         and p1 = 1 then (+ p1 p2)
         while (< p2 limit)
-        sum (if (funcall test p2) p2 0)))
+        when (funcall test p2) sum p2))
 
 (defun fib_sum_even (limit) (fib_sum_test limit #'evenp))
 
