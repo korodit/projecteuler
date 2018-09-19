@@ -107,12 +107,10 @@
 (defun max_palindrome_n_digits (n &aux (start (expt 10 (- n 1))) (end (- (expt 10 n) 1)) (mult 0) (maxx 0))
     (loop
         for i from start to end
-        do (setf maxx (loop 
-                    for j from (max i (floor maxx i)) to end
-                    for maxx2 = maxx
-                    do (setf mult (* i j))
-                    when (and (> mult maxx2) (is_palindrome (write-to-string mult))) do (setf maxx2 mult)
-                    maximize maxx2))
-        maximize maxx))
+        do (loop 
+            for j from (max i (floor maxx i)) to end
+            do (setf mult (* i j))
+            when (and (> mult maxx) (is_palindrome (write-to-string mult))) do (setf maxx mult)))
+    maxx)
 
 ;; (max_palindrome_n_digits 3)
