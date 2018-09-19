@@ -114,3 +114,5 @@
                     when (and (> mult maxx2) (is_palindrome (write-to-string mult))) do (setf maxx2 mult)
                     maximize maxx2))
         maximize maxx))
+
+;; (max_palindrome_n_digits 3)
