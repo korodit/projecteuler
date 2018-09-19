@@ -41,7 +41,7 @@
         for i = 2 then (+ i 1)
         while (> ceil 1)
         when (zerop (rem ceil i)) 
-            do (multiple-value-setq (pow ceil) (times_divided ceil i 0))
+            do (setf (values pow ceil) (times_divided ceil i 0))
             and collect (list i pow)))
 
 ;; Problem #1
