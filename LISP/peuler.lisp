@@ -24,6 +24,21 @@
 (defun prime_factors_slow (x)
     (delete-if-not #'(lambda (y) (= 0 (rem x y))) (prime_list (floor (sqrt x)))))
 
+;; Takes a number to be divided and a divisor of it and gives the power of the divisor that exists in the divided number
+;; plus the divided number if the divisor is removed from it
+(defun times_divided (divided divisor already)
+    (if (/= 0 (rem divided divisor)) (values already divided) (times_divided (/ divided divisor) divisor (+ already 1))))
+
+;; Result is in the form ((factor1 power1) (factor2 power2) ...)
+(defun prime_factors_powers (ceil &aux pow)
+    (if (not (and (integerp ceil) (plusp ceil))) (error "Non positive integer given to function prime_factors"))
+    (loop
+        for i = 2 then (+ i 1)
+        while (> ceil 1)
+        when (zerop (rem ceil i)) 
+            do (multiple-value-setq (pow ceil) (times_divided ceil i 0))
+            and collect (list i pow)))
+
 ;; Problem #1
 ;; Takes a limit number, and a list of numbers. Returns the sum of all the numbers from 1 up to and including limit-1, which are divided by one of the argument numbers
 ;; anums just concatenates the needed first number with the list of optional rest of the numbers.
@@ -53,15 +68,16 @@
 ;; Problem #3
 ;; Takes x and finds its largest prime factor
 (defun largest_prime_factor_slow (x)
-    (let ((candidates (prime_factors_slow x)))
-            (if (not candidates) ;; If no prime factors other than itself, the candidates list is empty!
+    (let ((candidates (prime_factors_powers x)))
+            ;; If no prime factors other than itself, the candidates list is empty!
+            (if (not candidates)
                 x
-                (car (last candidates)))))
+                (caar (last candidates)))))
 
 (defun largest_prime_factor (x)
     (loop
         for i from 2 below (sqrt x)
-        when (zerop (rem x i)) return (largest_prime_factor_fast (/ x i))
+        when (zerop (rem x i)) return (largest_prime_factor (/ x i))
         finally (return x)))
 
 ;; (largest_prime_factor 600851475143)
