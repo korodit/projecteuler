@@ -44,6 +44,16 @@
             do (setf (values pow ceil) (times_divided ceil i 0))
             and collect (list i pow)))
 
+;; Takes a string and returns a boolean value on whether it's a palindrome or not
+;; #string #palindrome
+(defun is_palindrome (str)
+    (labels ((ip_rec (str start end)
+                (if (>= start end) 
+                    t
+                    (if (eql (aref str start) (aref str end))
+                        (ip_rec str (+ start 1) (- end 1))))))
+        (ip_rec str 0 (- (length str) 1))))
+
 ;; Problem #1
 ;; Takes a limit number, and a list of numbers. Returns the sum of all the numbers from 1 up to and including limit-1, which are divided by one of the argument numbers
 ;; anums just concatenates the needed first number with the list of optional rest of the numbers.
@@ -89,3 +99,18 @@
         finally (return x)))
 
 ;; (largest_prime_factor 600851475143)
+
+;; Problem #4
+;; Takes n and finds the largest number which is a product of two n-digit numbers and which is
+;; a palindrome
+;; #number #max #palindrome
+(defun max_palindrome_n_digits (n &aux (start (expt 10 (- n 1))) (end (- (expt 10 n) 1)) (mult 0) (maxx 0))
+    (loop
+        for i from start to end
+        do (setf maxx (loop 
+                    for j from (max i (floor maxx i)) to end
+                    for maxx2 = maxx
+                    do (setf mult (* i j))
+                    when (and (> mult maxx2) (is_palindrome (write-to-string mult))) do (setf maxx2 mult)
+                    maximize maxx2))
+        maximize maxx))
