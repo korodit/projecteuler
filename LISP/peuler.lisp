@@ -114,3 +114,37 @@
     maxx)
 
 ;; (max_palindrome_n_digits 3)
+
+;; Problem #5
+;; Takes limit and finds the smallest number which is divisible by all numbers up to limit
+;; #number #min #division
+(defun divisible_up_to (limit)
+    ;; max_power calculates the maximum power of mul that is at most equal with n
+    (flet ((max_power (mul)
+        (labels ((mp_rec (mul acc &aux (newacc (* acc mul)))
+            (if (<= newacc limit) (mp_rec mul newacc) acc)))
+            (mp_rec mul mul))))
+        (reduce #'* (map 'list #'max_power (prime_list (+ limit 1))))))
+
+;; (divisible_up_to 20)
+
+;; Problem #6
+;; Takes a limit and finds the difference between the square of the sum up to limit
+;; and the sum of the squares up to limit
+;; #square #sum #difference
+(defun sum_sqr_diff_slow (limit &aux (num_sum (expt (floor (* limit (+ limit 1)) 2) 2)))
+    (loop
+        for i from 1 to limit
+        sum (* i i) into sq_sum
+        finally (return (- num_sum sq_sum))))
+
+;; Knowing that the sum of the first n natural numbers can be expressed as n(n+1)/2, 
+;; [and thus the square of the sum of the first n natural numbers can be expressed
+;; as n(n+1)(n)(n+1)/4 ] and that the sum of the first n square numbers is n(n+1)(2n+1)/6,
+;; it is quite easy to do this problem. Also, you can simplify the difference between these
+;; two to this: n(n+1)(3n+2)(n-1)/12
+
+(defun sum_sqr_diff (n)
+    (floor (* n (+ n 1) (+ (* 3 n) 2) (- n 1)) 12))
+
+;; (sum_sqr_diff 100)
