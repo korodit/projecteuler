@@ -1,4 +1,4 @@
-(load "peuler.lisp")
+(load "math.lisp")
 
 (defun euler_fun (num &key evaluate show-form)
     "Takes problem number and evaluates the answer or shows solution form, according to keys.
