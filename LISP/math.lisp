@@ -20,7 +20,6 @@
             while (funcall comp i limit)
             collect i)))
 
-
 (defun prime-list (limit)
 "    Prime list up to limit non-inclusive in order
     #prime"
@@ -29,6 +28,32 @@
         while nums
         collect (car nums)))
 
+(defun first-n-primes (n)
+"    Returns the list of the first n primes, n given. Can take optimizations.
+    #prime #first"
+     (labels ((relative-primes-in-list (listt)
+                (loop
+                        for nums = listt then (delete-if #'(lambda (x) (= 0 (rem x (car nums)))) (cdr nums))
+                        while nums
+                        collect (car nums))
+                )
+             (prime-list-with-known-beginning (beginning extension-start extension-end goal)
+                (setf extension
+                        (loop
+                                ;;beginning, one extra element added at start of list as padding for loop
+                                for b-prime in (cons 1 beginning)
+                                for extension = (range extension-start extension-end) 
+                                        then (delete-if #'(lambda (x) (= 0 (rem x b-prime))) extension)
+                                finally (return (nconc beginning (relative-primes-in-list extension)))))
+                (if (>= (length extension) goal) 
+                        (subseq extension 0 goal) 
+                        (prime-list-with-known-beginning extension extension-end (+ (* 2 goal) extension-end) n))))
+        (prime-list-with-known-beginning () 2 (* n 2) n)))
+
+(defun nth-prime (n) 
+"    Returns the nth prime, n given.
+    #primes #nth"       
+        (last (first-n-primes n)))
 
 (defun prime-factors-slow (x)
 "    Finds all prime factors of x and returns them as a list
