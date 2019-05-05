@@ -178,7 +178,7 @@
     it is quite easy to do this problem. Also, you can simplify the difference between these
     two to this: n(n+1)(3n+2)(n-1)/12
     #square #sum #difference"
-    (identity (floor (* n (+ n 1) (+ (* 3 n) 2) (- n 1)) 12)))
+    (identity (floor (* n (+ n 1) (+ (* 3 n) 2) (- n 1)) 12)))  ;; identity gets rid of second VALUE
     
 (defun largest-n-digit-product-in-series (n series &aux (trans (map 'vector #'char-to-int series)) (len (length trans)))
 "    Takes a number n and a string 'series' conmtaining a valid integer representation,
