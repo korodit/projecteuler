@@ -5,6 +5,13 @@
 ;; Gathering functions in a list for future features
 (setf funlist (list 
 
+(defun char-to-int (chr)
+"    Takes a numerical character and returns the integer value it represents."
+    (let ((result (- (char-int chr) (char-int #\0))))
+        (if (<= 0 result 9)
+            result
+            (error "Non-arithmetic character given to function \"char-to-int\""))))
+
 (defun range (start &optional limit &key (stp 1))
 "    Range, limit non-inclusive if ascending sequence, inclusive if descending.
     Omitting the limit make the value of start as limit and start is 0.
@@ -171,14 +178,21 @@
     it is quite easy to do this problem. Also, you can simplify the difference between these
     two to this: n(n+1)(3n+2)(n-1)/12
     #square #sum #difference"
-    (identity (floor (* n (+ n 1) (+ (* 3 n) 2) (- n 1)) 12))))) ;; identity gets rid of second VALUE
+    (identity (floor (* n (+ n 1) (+ (* 3 n) 2) (- n 1)) 12)))
+    
+(defun largest-n-digit-product-in-series (n series &aux (trans (map 'vector #'char-to-int series)) (len (length trans)))
+"    Takes a number n and a string 'series' conmtaining a valid integer representation,
+    and finds the largest product that can be created my multiplying any n adjacent digits contained in the series
+    #sequence #product #multiply"
+    (if (< len n) 
+        (error "The series input must be longer than the number of digits of the product")
+        (loop for i from 0 to (- len n) maximize (reduce #'* (subseq trans i (+ i n))))))))
 
 (defun doclist (&key export)
 "Prints the titles and documentations of all the functions on terminal, or exports them to math_funs.txt"
-(let ((dest (if export (open "math_funs.txt" :direction :output :if-exists :overwrite :if-does-not-exist :create) t)))
-        (loop for f in funlist do (format dest "****************************************~%~%    --~a--~%~%~a~%~%****************************************~%" 
-                                f (documentation (symbol-function f) 'function)))
-(if export (close dest))
-))
+    (let ((dest (if export (open "math_funs.txt" :direction :output :if-exists :overwrite :if-does-not-exist :create) t)))
+            (loop for f in funlist do (format dest "****************************************~%~%    --~a--~%~%~a~%~%****************************************~%" 
+                                    f (documentation (symbol-function f) 'function)))
+    (if export (close dest))))
 
 (in-package :cl)
