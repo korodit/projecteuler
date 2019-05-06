@@ -186,7 +186,21 @@
     #sequence #product #multiply"
     (if (< len n) 
         (error "The series input must be longer than the number of digits of the product")
-        (loop for i from 0 to (- len n) maximize (reduce #'* (subseq trans i (+ i n))))))))
+        (loop for i from 0 to (- len n) maximize (reduce #'* (subseq trans i (+ i n))))))
+        
+(defun pythagorean-triplets-with-sum-n (n)
+"    Takes a number n and finds a pythagorean triplet with sum n.
+    Returns the triplet in a list, or nil if it does not exist.
+    A Pythagorean triplet is a set of three natural numbers, a < b < c,
+    for which a^2 + b^2 = c^2.
+    #sum #pythagorean #triplet"
+    (block nested-loops
+        (loop for i from 1 to (floor n 3) do
+            (loop for j from (1+ i) to (floor n 2) do
+                (let ((k (- n i j)))
+                    (if (= (* k k) (+ (* i i) (* j j)))
+                        (return-from nested-loops (list i j k)))))
+        finally (return nil))))))
 
 (defun doclist (&key export)
 "Prints the titles and documentations of all the functions on terminal, or exports them to math_funs.txt"
