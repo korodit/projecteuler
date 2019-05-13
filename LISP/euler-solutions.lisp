@@ -86,6 +86,12 @@ For example, 32 + 42 = 9 + 16 = 25 = 52.
 
 There exists exactly one Pythagorean triplet for which a + b + c = 1000.
 Find the product abc.
+")
+
+'((reduce '+ (math::prime-list-range-by-division 2000000))
+"Problem 10
+The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+Find the sum of all the primes below two million.
 ")))
 
 (defun euler_fun (num &key solution show-form show-doc)

@@ -27,45 +27,68 @@
             while (funcall comp i limit)
             collect i)))
 
-(defun prime-list (limit)
-"    Prime list up to limit non-inclusive in order
+(defun is-prime (n &aux (r (isqrt n)))
+"    A faster prime checker, based on the problem 7 overview on project Euler site.
+    Some useful facts:
+    1 is not a prime.
+    All primes except 2 are odd.
+    All primes greater than 3 can be written in the form  6k+/-1.
+    Any number n can have only one primefactor greater than sqrt n.
+    The consequence for primality testing of a number n is: if we 
+    cannot find a numberf less than or equal sqrt n that divides n 
+    then n is prime: the only primefactor of n is n itself.
     #prime"
+    (cond
+        ((= n 1) nil)
+        ((< n 4) t)
+        ((zerop (mod n 2)) nil)
+        ((< n 9) t)
+        ((zerop (mod n 3)) nil)
+        (t (loop
+                ;; for r from (isqrt n) 
+                for f = 5 then (+ f 6)
+                while (<= f r)
+                when (or (zerop (mod n f)) (zerop (mod n (+ f 2)))) do (return nil) 
+                finally (return t)))))
+
+(defun prime-list-range-by-division (limit1 &rest limit2 &aux 
+                                                        (start (if (null limit2) 2 limit1))
+                                                        (end (if (null limit2) limit1 limit2)))
+"    Outputs a list with all the prime numbers within the given range, limits inclusive.
+    If given one value, that value is the upper limit inclusive.
+    #prime #list #range"
     (loop
-        for nums = (range 2 limit) then (delete-if #'(lambda (x) (= 0 (rem x (car nums)))) (cdr nums))
-        while nums
-        collect (car nums)))
+        for i from start upto end
+        when (is-prime i) collect i))
 
-(defun first-n-primes (n)
-"    Returns the list of the first n primes, n given. Can take optimizations.
+(defun first-n-primes-division-list (n &aux (cnt 0))
+"    Outputs a list with the first n primes. Uses is-prime function in loop.
     #prime #first"
-     (labels ((relative-primes-in-list (listt)
-                (loop
-                        for nums = listt then (delete-if #'(lambda (x) (= 0 (rem x (car nums)))) (cdr nums))
-                        while nums
-                        collect (car nums))
-                )
-             (prime-list-with-known-beginning (beginning extension-start extension-end goal)
-                (setf extension
-                        (loop
-                                ;;beginning, one extra element added at start of list as padding for loop
-                                for b-prime in (cons 1 beginning)
-                                for extension = (range extension-start extension-end) 
-                                        then (delete-if #'(lambda (x) (= 0 (rem x b-prime))) extension)
-                                finally (return (nconc beginning (relative-primes-in-list extension)))))
-                (if (>= (length extension) goal) 
-                        (subseq extension 0 goal) 
-                        (prime-list-with-known-beginning extension extension-end (+ (* 2 goal) extension-end) n))))
-        (prime-list-with-known-beginning () 2 (* n 2) n)))
+    (loop
+        for i from 2
+        when (is-prime i)
+            do (incf cnt)
+            and collect i
+        while (< cnt n)))
 
-(defun nth-prime (n) 
+(defun nth-prime-slow (n) 
 "    Returns the nth prime, n given.
     #primes #nth"       
-        (last (first-n-primes n)))
+        (last (first-n-primes-division-list n)))
+
+(defun nth-prime (n &aux (countt 1))
+"    Returns the nth prime, n given.
+    #primes #nth"  
+    (loop
+        ;; for count from 1
+        for candidate = 3 then (+ candidate 2)
+        when (is-prime candidate) do (incf countt)
+        when (= countt n) do (return-from nth-prime candidate)))
 
 (defun prime-factors-slow (x)
 "    Finds all prime factors of x and returns them as a list
     #prime #factor"
-    (delete-if-not #'(lambda (y) (= 0 (rem x y))) (prime-list (floor (sqrt x)))))
+    (delete-if-not #'(lambda (y) (= 0 (rem x y))) (prime-list-range-by-division (floor (sqrt x)))))
 
 (defun divisor-power-and-rem (divided divisor already)
 "    Takes a number to be divided and a divisor of it, and gives the power of the divisor that exists in the divided number,
@@ -157,7 +180,7 @@
         (labels ((mp_rec (mul acc &aux (newacc (* acc mul)))
             (if (<= newacc limit) (mp_rec mul newacc) acc)))
             (mp_rec mul mul))))
-        (reduce #'* (map 'list #'max_power (prime-list (+ limit 1))))))
+        (reduce #'* (map 'list #'max_power (prime-list-range-by-division limit)))))
 
 (defun square-of-sum-sum-of-square-diff-slow (limit &aux (num_sum (expt (floor (* limit (+ limit 1)) 2) 2)))
 "    Takes a limit and finds the difference between the square of the sum up to limit
