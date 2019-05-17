@@ -205,7 +205,7 @@
     
 (defun largest-n-digit-product-in-series (n series &aux (trans (map 'vector #'char-to-int series)) (len (length trans)))
 "    Takes a number n and a string 'series' conmtaining a valid integer representation,
-    and finds the largest product that can be created my multiplying any n adjacent digits contained in the series
+    and finds the largest product that can be created by multiplying any n adjacent digits contained in the series
     #sequence #product #multiply"
     (if (< len n) 
         (error "The series input must be longer than the number of digits of the product")
@@ -213,7 +213,7 @@
 
 (defun largest-n-digit-product-in-sequence (n seq &aux (len (length seq)))
 "    Takes a number n and an integer sequence, and finds the largest product that can be 
-    created my multiplying any n adjacent digits contained in the sequence.
+    created by multiplying any n adjacent digits contained in the sequence.
     #sequence #product #multiply"
     (if (< len n) 
         0
