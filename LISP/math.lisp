@@ -209,7 +209,15 @@
     #sequence #product #multiply"
     (if (< len n) 
         (error "The series input must be longer than the number of digits of the product")
-        (loop for i from 0 to (- len n) maximize (reduce #'* (subseq trans i (+ i n))))))
+        (largest-n-digit-product-in-sequence n trans)))
+
+(defun largest-n-digit-product-in-sequence (n seq &aux (len (length seq)))
+"    Takes a number n and an integer sequence, and finds the largest product that can be 
+    created my multiplying any n adjacent digits contained in the sequence.
+    #sequence #product #multiply"
+    (if (< len n) 
+        0
+        (loop for i from 0 to (- len n) maximize (reduce #'* (subseq seq i (+ i n))))))
         
 (defun pythagorean-triplets-with-sum-n (n)
 "    Takes a number n and finds a pythagorean triplet with sum n.
@@ -223,7 +231,71 @@
                 (let ((k (- n i j)))
                     (if (= (* k k) (+ (* i i) (* j j)))
                         (return-from nested-loops (list i j k)))))
-        finally (return nil))))))
+        finally (return nil))))
+
+(defun matrix-slice (arr part &optional (num 0) &aux new-array (old-rows (array-dimension arr 0)) (old-columns (array-dimension arr 1)))
+"    Creates a vector containing a slice of a given matrix.
+    The right diagonals start from up left and go to down right.
+    Right diagonal number 0 starts with the element (rows-1,0),
+    then the starting element sequence continues up and then right.
+    Left diagonals start from down left and go to up right.
+    Left diagonal number 0 starts with the element (0,0), then
+    the startign element sequence continues down and then right.
+    Keywords for the type of slice are: :row, :column, :right-diag, :left-diag.
+    #matrix #aray #slice"
+    (case part
+        (:row
+            (setf new-array (make-array old-rows :initial-element 0))
+            (loop for i from 0 to (- old-rows 1)
+                do (setf (aref new-array i) (aref arr num i))))
+        (:column
+            (setf new-array (make-array old-columns :initial-element 0))
+            (loop for i from 0 to (- old-columns 1)
+                do (setf (aref new-array i) (aref arr i num))))
+        (:right-diag
+            (let* (
+                    (srow (if (< num old-rows) (- old-rows num 1) 0))
+                    (scolumn (if (< num old-rows) 0 (1+ (- num old-rows))))
+                    (array-size (min (- old-rows srow) (- old-columns scolumn))))
+                (setf new-array (make-array array-size :initial-element 0))
+                (loop
+                    for i from srow to (- old-rows 1)
+                    for j from scolumn to (- old-columns 1)
+                    for index = 0 then (1+ index)
+                    do (setf (aref new-array index) (aref arr i j)))))
+        (:left-diag
+            (let* (
+                    (srow (if (< num old-rows) num (- old-rows 1)))
+                    (scolumn (if (< num old-rows) 0 (+ (- num old-rows) 1)))
+                    (array-size (min (1+ srow) (- old-columns scolumn))))
+                (setf new-array (make-array array-size :initial-element 0))
+                (loop
+                    for i from srow downto 0
+                    for j from scolumn to (- old-columns 1)
+                    for index = 0 then (1+ index)
+                    do (setf (aref new-array index) (aref arr i j))))))
+    new-array)
+
+(defun number-of-matrix-slices (arr part &aux (rows (array-dimension arr 0)) (columns (array-dimension arr 1)))
+"    Returns the number of columns,rows, or diagonals of a matrix respectively.
+    Keywords are deliberately the same as the matrix-slice function.
+    #matrix #array #slice $number #dimensions"
+    (case part
+        (:row rows)
+        (:column columns)
+        (:right-diag (- (+ rows columns) 1))
+        (:left-diag (- (+ rows columns) 1))))
+
+(defun matrix-max-product-of-n-consecutive-values (matrix n &aux (dimensions (array-dimensions matrix)))
+"    Returns the maximum product of n consecutive elements in an integer matrix that are adjucent
+    horizontally, vertically, or diagonically.
+    #matrix #array #max #product #consecutive #adjucent"
+    (loop
+        for slice in (list :row :column :right-diag :left-diag)
+        maximize (loop
+                    for i from 0 to (- (number-of-matrix-slices matrix slice) 1)
+                    maximize (largest-n-digit-product-in-sequence n (matrix-slice matrix slice i)))))
+))
 
 (defun doclist (&key export)
 "Prints the titles and documentations of all the functions on terminal, or exports them to math_funs.txt"

@@ -1,10 +1,5 @@
 (load "math.lisp")
-
-(defun get-file-contents (filename)
-  (with-open-file (stream filename)
-    (let ((contents (make-string (file-length stream))))
-      (read-sequence contents stream)
-      contents)))
+(load "input-helpers.lisp")
 
 (defmacro input-filename (num) (concatenate 'string "inputs/input" (write-to-string num) ".txt"))
 (defmacro fetch-input-string (num) `(get-file-contents ,`(input-filename ,num)))
@@ -82,6 +77,16 @@ Find the product abc.
 "Problem 10
 The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
 Find the sum of all the primes below two million.
+")
+
+'((math::matrix-max-product-of-n-consecutive-values (read-matrix-from-stream 'integer (make-string-input-stream (fetch-input-string 11))) 4)
+"Problem 11
+In the 20×20 grid below, four numbers along a diagonal line have been marked in red.
+
+(Array in input file 11)
+
+The product of these numbers is 26 × 63 × 78 × 14 = 1788696.
+What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in the 20×20 grid?
 ")))
 
 (defun euler_fun (num &key solution show-form show-doc)
