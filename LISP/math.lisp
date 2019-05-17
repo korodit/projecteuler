@@ -235,6 +235,8 @@
 
 (defun matrix-slice (arr part &optional (num 0) &aux new-array (old-rows (array-dimension arr 0)) (old-columns (array-dimension arr 1)))
 "    Creates a vector containing a slice of a given matrix.
+    Num gives the index, e.g. the nth row, nth row,
+    nth right diagonal, nth left diagonal.
     The right diagonals start from up left and go to down right.
     Right diagonal number 0 starts with the element (rows-1,0),
     then the starting element sequence continues up and then right.
