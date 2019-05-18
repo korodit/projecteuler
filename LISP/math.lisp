@@ -94,7 +94,7 @@
 "    Takes a number to be divided and a divisor of it, and gives the power of the divisor that exists in the divided number,
     plus the result of the division between the divided and the divisor. Helper function of prime-factors-powers.
     #factor #divisor #divided #power"
-    (if (/= 0 (rem divided divisor)) (values already divided) (times_divided (/ divided divisor) divisor (+ already 1))))
+    (if (/= 0 (rem divided divisor)) (values already divided) (divisor-power-and-rem (/ divided divisor) divisor (+ already 1))))
 
 (defun prime-factors-powers (ceil &aux pow)
 "    Returns the prime factors of the argmuent, and the power of each in the number.
