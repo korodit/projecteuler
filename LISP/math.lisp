@@ -27,6 +27,34 @@
             while (funcall comp i limit)
             collect i)))
 
+(defun prime-sieve-raw-array (upper_bound &aux (arr
+                                            (make-array (1+ upper_bound) :initial-element t)))
+"    Performs Eratosthenes sieve on an array of suitable size
+    to fit the upper search bound. Primes are marked with the t value,
+    together with 0 and 1. Number of primes is also returned as value.
+    !!!MEMORY CONSUMING
+    #prime #range #sieve #array"
+    (loop
+        with num = 0
+        for i from 2 to upper_bound
+        when (aref arr i) 
+        do (incf num)
+        and 
+        do (loop
+                    for j = (* 2 i) then (+ j i)
+                    while (<= j upper_bound)
+                    do (setf (aref arr j) nil))
+        finally (return (values arr num))))
+
+(defun prime-sieve-list (upper_bound)
+"    Creates a list with all the primes lesser or equal to upper bound.
+    Uses prime-sieve-raw-array. !!!MEMORY CONSUMING.
+    #prime #range #sieve #list"
+    (multiple-value-bind (arr length) (prime-sieve-raw-array upper_bound)
+        (loop
+            for i from 2 to (1- (length arr))
+            when (aref arr i) collect i)))
+
 (defun is-prime (n &aux (r (isqrt n)))
 "    A faster prime checker, based on the problem 7 overview on project Euler site.
     Some useful facts:
@@ -155,10 +183,14 @@
 (defun largest-prime-factor (x)
 "    Takes x and finds its largest prime factor
     #largest #max #prime #factor"
-    (loop
-        for i from 2 below (sqrt x)
-        when (zerop (rem x i)) return (largest-prime-factor (/ x i))
-        finally (return x)))
+    (labels
+        ((recursive-helper (x current_check)
+            (if (= x current_check)
+                x
+                (if (zerop (rem x current_check))
+                    (recursive-helper (floor x current_check) current_check)
+                    (recursive-helper x (1+ current_check))))))
+        (recursive-helper x 2)))
 
 (defun max-palindrome-prod-of-2-n-digit-nums (n &aux (start (expt 10 (- n 1))) (end (- (expt 10 n) 1)) (mult 0) (maxx 0))
 "    Takes n and finds the largest number which is a product of two n-digit numbers and which is
@@ -297,6 +329,33 @@
         maximize (loop
                     for i from 0 to (- (number-of-matrix-slices matrix slice) 1)
                     maximize (largest-n-digit-product-in-sequence n (matrix-slice matrix slice i)))))
+
+(defun divisors (n)
+"    Creates a list all the integers that divide n,
+    including 1 and itself.
+    #divisors #division"
+    (loop
+        for i from 1 to n
+        when (zerop (rem n i)) collect i))
+
+(defun number-of-divisors (n &aux (sqr (isqrt n)))
+"    Finds the number of all integers that divide n,
+    including 1 and itself.
+    #divisors #division #number"
+    (+ 
+        (* 2 (loop
+            for i from 1 to sqr
+            count (zerop (rem n i))))
+        (if (= n (* sqr sqr)) -1 0)))
+
+(defun first-triangular-number-with-at-least-n-divisors (n)
+"    Finds the first triangular number that has at least
+    the number of divisors given as a parameter.
+    #divisors #division #number #triangle #triangular"
+    (loop 
+        for add from 1
+        for i = 1 then (+ i add)
+        when (> (number-of-divisors i) n) return i))
 ))
 
 (defun doclist (&key export)
