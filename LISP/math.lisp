@@ -351,17 +351,30 @@
         for i from 1 to n
         when (zerop (rem n i)) collect i))
 
-(defun number-of-divisors (n &aux (sqr (isqrt n)))
+(defun number-of-divisors (n &key primes (sqr (isqrt n)))
 "    Finds the number of all integers that divide n,
     including 1 and itself.
+    It can be optionally given an array of primes, the max of which
+    is known to be larger than n's sqrt,
+    for significantly faster results.
     #divisors #division #number"
-    (+ 
-        (* 2 (loop
-            for i from 1 to sqr
-            count (zerop (rem n i))))
-        (if (= n (* sqr sqr)) -1 0)))
+    (if primes
+        (loop
+            with prime = 0 and result = 1 and pow = 0
+            for i from 0
+            while (and (> n 1) (<= i sqr))
+            do (setf prime (aref primes i))
+            when (zerop (rem n prime)) 
+                do (setf (values pow n) (divisor-power-and-rem n prime 0))
+                and do (setf result (* result (1+ pow)))
+            finally (return result))
+        (+ 
+            (* 2 (loop
+                for i from 1 to sqr
+                count (zerop (rem n i))))
+            (if (= n (* sqr sqr)) -1 0))))
 
-(defun first-triangular-number-with-at-least-n-divisors (n)
+(defun first-triangular-number-with-at-least-n-divisors (n &key primes)
 "    Finds the first triangular number that has at least
     the number of divisors given as a parameter.
     We make use of the fact that the ith triangular number
@@ -369,6 +382,7 @@
     co-prime, and thus the number of divisors of the above formula's
     result is the product of the divisors of i/2 and i+1, if i is even,
     or of the divisors of i and (i+1)/2, if i is odd.
+    Optionally takes an array prime range for use by number-of-divisors function.
     #divisors #division #number #triangle #triangular"
     (loop 
         with part1 = 0 and part2 = 0
@@ -376,7 +390,7 @@
         do (if (zerop (rem i 2))
             (setf part1 (/ i 2) part2 (1+ i))
             (setf part1 i part2 (/ (1+ i) 2)))
-        when (> (* (number-of-divisors part1) (number-of-divisors part2)) n) return (/ (* i (1+ i)) 2)))
+        when (> (* (number-of-divisors part1 :primes primes) (number-of-divisors part2 :primes primes)) n) return (/ (* i (1+ i)) 2)))
 
 ))
 
