@@ -55,6 +55,19 @@
             for i from 2 to (1- (length arr))
             when (aref arr i) collect i)))
 
+(defun prime-sieve-array (upper_bound)
+"    Creates an array with all the primes lesser or equal to upper bound.
+    Also returns the array length.
+    Uses prime-sieve-raw-array. !!!MEMORY CONSUMING.
+    #prime #range #sieve #array"
+    (multiple-value-bind (arr length) (prime-sieve-raw-array upper_bound)
+        (loop
+            with new-arr = (make-array length :initial-element 0)
+            and index = 0
+            for i from 2 to (1- (length arr))
+            when (aref arr i) do (progn (setf (aref new-arr index) i) (incf index))
+            finally (return (values new-arr length)))))
+
 (defun is-prime (n &aux (r (isqrt n)))
 "    A faster prime checker, based on the problem 7 overview on project Euler site.
     Some useful facts:
@@ -351,11 +364,20 @@
 (defun first-triangular-number-with-at-least-n-divisors (n)
 "    Finds the first triangular number that has at least
     the number of divisors given as a parameter.
+    We make use of the fact that the ith triangular number
+    equals i*(i+1)/2, the fact that two consecutive numbers are
+    co-prime, and thus the number of divisors of the above formula's
+    result is the product of the divisors of i/2 and i+1, if i is even,
+    or of the divisors of i and (i+1)/2, if i is odd.
     #divisors #division #number #triangle #triangular"
     (loop 
-        for add from 1
-        for i = 1 then (+ i add)
-        when (> (number-of-divisors i) n) return i))
+        with part1 = 0 and part2 = 0
+        for i from 1
+        do (if (zerop (rem i 2))
+            (setf part1 (/ i 2) part2 (1+ i))
+            (setf part1 i part2 (/ (1+ i) 2)))
+        when (> (* (number-of-divisors part1) (number-of-divisors part2)) n) return (/ (* i (1+ i)) 2)))
+
 ))
 
 (defun doclist (&key export)
