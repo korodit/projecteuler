@@ -4,7 +4,7 @@
       (read-sequence contents stream)
       contents)))
 
-(defun delimiterp (c) (or (char= c #\Space) (char= c #\,)))
+(defun delimiterp (c) (or (char= c #\Space) (char= c #\,) (char= c #\Newline)))
 
 (defun split (string &key (delimiterp #'delimiterp))
   (loop :for beg = (position-if-not delimiterp string)
