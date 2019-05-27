@@ -392,6 +392,31 @@
             (setf part1 i part2 (/ (1+ i) 2)))
         when (> (* (number-of-divisors part1 :primes primes) (number-of-divisors part2 :primes primes)) n) return (/ (* i (1+ i)) 2)))
 
+(defun largest-collatz-length-in-range (limit &aux (lengths (make-array (1+ limit) :initial-element 0)))
+"    Prints the number at which the longest Collatz sequence starts, among
+    all the numbers up to and including the given limit. Also returns the
+    max length as the second value.
+    #collatz #sequence #max"
+    (setf (aref lengths 1) 1)
+    (labels ((next-collatz (n)
+                (if (evenp n) (floor n 2) (1+ (* 3 n))))
+            (update-lengths (path currlen &aux (curr-index (car path)) (taill (cdr path)))
+                (if path 
+                    (progn (if (<= curr-index limit) (setf (aref lengths curr-index) currlen))
+                            (update-lengths taill (1+ currlen)))))
+            (traverse-collatz (cnum path &aux (cvalue (if (<= cnum limit) (aref lengths cnum) 0)))
+                (if (zerop cvalue)
+                    (traverse-collatz (next-collatz cnum) (cons cnum path))
+                    (update-lengths path (1+ cvalue)))))
+        (loop
+            with maxx = 0 and maxxid = 0
+            for i from (floor limit 2) to limit
+            do (traverse-collatz i nil)
+            when (> (aref lengths i) maxx) 
+                do (setf maxxid i) 
+                and do (setf maxx (aref lengths i))
+            finally (return (values maxxid maxx)))))
+
 ))
 
 (defun doclist (&key export)
