@@ -144,6 +144,12 @@ and the places are 20 down moves, so we pick which 20 positions out of 40 are to
 So it's (40 20) = 40!/(20!*(40-20)!) possible paths.
 ")
 
+'((apply '+ (map 'list #'math::char-to-int (write-to-string (expt 2 1000))))
+"Problem 16
+2^15 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
+What is the sum of the digits of the number 2^1000?
+")
+
 ))
 
 (defun euler_fun (num &key solution show-form show-doc)

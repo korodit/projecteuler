@@ -422,6 +422,9 @@
                 (if (zerop n) acc (rec-helper (1- n) (* acc n)))))
         (rec-helper n 1)))
 
+(defun sum-of-digits (num)
+    (apply '+ (map 'list #'char-to-int (write-to-string num))))
+
 ))
 
 (defun doclist (&key export)
