@@ -417,6 +417,11 @@
                 and do (setf maxx (aref lengths i))
             finally (return (values maxxid maxx)))))
 
+(defun factorial (n)
+    (labels ((rec-helper (n acc)
+                (if (zerop n) acc (rec-helper (1- n) (* acc n)))))
+        (rec-helper n 1)))
+
 ))
 
 (defun doclist (&key export)

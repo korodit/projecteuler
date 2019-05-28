@@ -131,6 +131,19 @@ Which starting number, under one million, produces the longest chain?
 
 NOTE: Once the chain starts the terms are allowed to go above one million.
 ")
+
+'((/ (math::factorial 40) (expt (math::factorial 20) 2))
+"Problem 15
+Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
+How many such routes are there through a 20×20 grid?
+
+Solution: It takes 40 moves to reach the bottom right corner, 20 left and 20 down. Each path is uniquely described as a sequence
+of down (D) and right (R) moves. Moreover, each path is uniquely described by the positions in the 40-move long path
+at which we place D moves, since the rest are just filled with R moves. Therefore, our pool of objects are 40 positions,
+and the places are 20 down moves, so we pick which 20 positions out of 40 are to be filled with D moves.
+So it's (40 20) = 40!/(20!*(40-20)!) possible paths.
+")
+
 ))
 
 (defun euler_fun (num &key solution show-form show-doc)
