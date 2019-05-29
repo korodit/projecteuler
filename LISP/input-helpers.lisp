@@ -13,6 +13,14 @@
     :when beg :collect (subseq string beg end)
     :while end))
 
+(defun read-lists-from-stream (stream)
+    (loop
+        with str and eofp
+        until eofp
+        do (multiple-value-setq (str eofp) (read-line stream))
+        while str
+        collect (map 'list #'parse-integer (split str))))
+
 (defun read-matrix-from-stream (el-type stream)
 "User must make sure the array is properly structured.
 Element type parameter added for future compatibility."

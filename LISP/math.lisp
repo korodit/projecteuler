@@ -462,6 +462,28 @@ limitations."
     (loop for i from 1 to limit
         sum (letters i)))
 
+(defmacro sum (lst) `(apply '+ ,lst))
+
+(defun max-sum-top-bottom-triangle (triangle &aux (rev (reverse triangle)))
+"    Returns the max sum of a path in an integer triangle of the form:
+    3
+    7 4
+    2 4 6
+    8 5 9 3, given we can only go down, left-right each time.
+    #triangle #sum #max
+"
+    (loop
+        with bottom = (first rev)
+        for lines = (cdr rev) then (cdr lines)
+        while lines
+        for up = (second rev) then (first lines)
+        do (setf bottom (loop
+                for upp in up
+                for left in bottom
+                for right in (cdr bottom)
+                collect (+ upp (max left right))))
+        finally (return (car bottom))))
+
 ))
 
 (defun doclist (&key export)

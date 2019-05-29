@@ -158,6 +158,18 @@ NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-
 The use of \"and\" when writing out numbers is in compliance with British usage.
 ")
 
+'((math::max-sum-top-bottom-triangle (read-lists-from-stream (make-string-input-stream (fetch-input-string 18))))
+"Problem 18
+By starting at the top of the triangle below and moving to adjacent numbers on the row below, the maximum total from top to bottom is 23.
+   3
+  7 4
+ 2 4 6
+8 5 9 3
+That is, 3 + 7 + 4 + 9 = 23.
+Find the maximum total from top to bottom of the triangle below:
+(triangle in input file 18)
+")
+
 ))
 
 (defun euler_fun (num &key solution show-form show-doc)
