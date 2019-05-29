@@ -466,9 +466,9 @@ limitations."
 
 (defun max-sum-top-bottom-triangle (triangle &aux (rev (reverse triangle)))
 "    Returns the max sum of a path in an integer triangle of the form:
-    3
-    7 4
-    2 4 6
+       3
+      7 4
+     2 4 6
     8 5 9 3, given we can only go down, left-right each time.
     #triangle #sum #max
 "
