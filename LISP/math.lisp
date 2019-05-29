@@ -418,12 +418,49 @@
             finally (return (values maxxid maxx)))))
 
 (defun factorial (n)
+"    Gives the factorial of n, n greater than or equal to zero.
+    #factorial"
     (labels ((rec-helper (n acc)
                 (if (zerop n) acc (rec-helper (1- n) (* acc n)))))
         (rec-helper n 1)))
 
 (defun sum-of-digits (num)
+"    Gives the sum of digits of a number in decimal form.
+    #sum #digits"
     (apply '+ (map 'list #'char-to-int (write-to-string num))))
+
+
+(defun letters (num &aux 
+                        (letnum #(0 3 3 5 4 4 3 5 5 4 3 6 6 8 8 7  7 9 8 8))
+                        (lettens #(0 0 6 6 5 5 5 7 6 6))
+                        (total 0)
+                        (hundreds (floor num 100))
+                        (mod100 (mod num 100))
+                        (tens (floor (mod num 100) 10))
+                        (units (mod num 10)))
+"Returns the number of letters used for a given number, from 0 to 1000.
+Rules: 
+If the numbers 1 to 5 are written out in words: one, two, three, four, five, then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
+If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words, how many letters would be used?
+Do not count spaces or hyphens. For example, 342 (three hundred and forty-two) contains 23 letters and 115 (one hundred and fifteen) contains 20 letters.
+The use of \"and\" when writing out numbers is in compliance with British usage."
+    (if (= num 1000) (return-from letters 11))
+    (if (zerop num) 4)
+    (if (plusp hundreds)
+        (incf total (+ 7 (aref letnum hundreds))))
+    (if (and (plusp hundreds) (plusp mod100))
+        (incf total 3))
+    (if (< mod100 20)
+        (incf total (aref letnum mod100))
+        (incf total (+ (aref lettens tens) (aref letnum units))))
+    total)
+
+(defun letters-in-range (limit)
+"Returns the sum of letters used for all numbers up to limit,
+limit less or equal to 1000 for now due to 'letters' function
+limitations."
+    (loop for i from 1 to limit
+        sum (letters i)))
 
 ))
 
