@@ -170,6 +170,20 @@ Find the maximum total from top to bottom of the triangle below:
 (triangle in input file 18)
 ")
 
+'((- (math::count-start-of-month-days 0 1900 1 0 2001 0) (math::count-start-of-month-days 0 1900 1 0 1901 0))
+"Problem 19
+You are given the following information, but you may prefer to do some research for yourself.
+    1 Jan 1900 was a Monday.
+    Thirty days has September,
+    April, June and November.
+    All the rest have thirty-one,
+    Saving February alone,
+    Which has twenty-eight, rain or shine.
+    And on leap years, twenty-nine.
+    A leap year occurs on any year evenly divisible by 4, but not on a century unless it is divisible by 400.
+How many Sundays fell on the first of the month during the twentieth century (1 Jan 1901 to 31 Dec 2000)?
+")
+
 ))
 
 (defun euler_fun (num &key solution show-form show-doc)

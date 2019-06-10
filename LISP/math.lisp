@@ -484,6 +484,54 @@ limitations."
                 collect (+ upp (max left right))))
         finally (return (car bottom))))
 
+(defun divisible-by (dividend divisor)
+"    Returns t if dividend is divisible by divisor,
+    false otherwise.
+    #division #divisor"
+    (zerop (mod dividend divisor)))
+
+(defun not-divisible-by (dividend divisor)
+"    The opposite of divisible-by function
+    #division #divisor"
+    (not (divisible-by dividend divisor)))
+
+(defun leapp (year)
+"    Returns t if year is leap.
+    #date #year #leap"
+    (and (divisible-by year 4) (or (not-divisible-by year 100) (divisible-by year 400))))
+
+(defun days-of-month (monthnum year &aux (monthdays #(31 28 31 30 31 30 31 31 30 31 30 31)))
+"    Returns the number of days of the given month for the given year.
+    Months are 0-11, 0 for January.
+    #date #month #days #year"
+    (case monthnum
+        (1 (if (leapp year) 29 28))
+        (otherwise (aref monthdays monthnum))))
+
+(defun create-month-stepper (day month year weekday)
+"    Returns a function that steps to the beginning of the next month,
+    starting from a given day, month, year and what weekday it was at
+    that date. At each iteration, returns the new weekday at the start
+    of the month, the new month, and the new year. Weekdays are 0-6, 0
+    for Sunday. Months are 0-11, 0 for January.
+    #date #month #year #weekday #stepper"
+    (lambda ()
+        (setf weekday (mod (+ weekday (days-of-month month year)) 7))
+        (if (equal month 11) (incf year))
+        (setf month (mod (1+ month) 12))
+        (list weekday month year)))
+
+(defun count-start-of-month-days (from-month from-year from-weekday to-month to-year countday &aux
+                                                    (stepper (create-month-stepper 0 from-month from-year from-weekday)))
+"   Counts how many times the given weekday 'countday' was at the start of a month,
+    starting from the given month and year and also given what weekday was the first
+    day of the starting month, and up to the given month and year, non inclusive.
+    Months are 0-11, 0 for January. from-weekday and countday are 0-6, 0 for Monday."
+    (+  (if (equal from-weekday countday) 1 0)
+        (loop
+            for (weekday month year) = (funcall stepper)
+            until (and (equal month to-month) (equal year to-year))
+            count (equal weekday 0))))
 ))
 
 (defun doclist (&key export)
