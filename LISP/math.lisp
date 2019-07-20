@@ -5,6 +5,12 @@
 ;; Gathering functions in a list for future features
 (setf funlist (list 
 
+(defun compose (curr &rest funs)
+    (if (null funs)
+        curr
+        (lambda (&rest args)
+            (funcall curr (apply (apply #'compose funs) args)))))
+
 (defun char-to-int (chr)
 "    Takes a numerical character and returns the integer value it represents."
     (let ((result (- (char-int chr) (char-int #\0))))
@@ -343,13 +349,66 @@
                     for i from 0 to (- (number-of-matrix-slices matrix slice) 1)
                     maximize (largest-n-digit-product-in-sequence n (matrix-slice matrix slice i)))))
 
-(defun divisors (n)
+(defun divisors-list-slow (n)
 "    Creates a list all the integers that divide n,
     including 1 and itself.
     #divisors #division"
     (loop
         for i from 1 to n
         when (zerop (rem n i)) collect i))
+
+(defun divisors-list (n &aux (sqr (isqrt n)))
+"    Creates a list all the integers that divide n,
+    including 1 and itself.
+    Searches up to the square root of n, then
+    infers the rest from the divisors up to there.
+    #divisors #division"
+    (flet ((expand-divisors-low (n low-divisors &aux (high-divisors 
+                                                        (reverse (map 'list #'(lambda (divisor) (floor n divisor)) low-divisors))))
+                (if (= n (* sqr sqr)) (setf high-divisors (cdr high-divisors)))
+                (concatenate 'list low-divisors high-divisors)))
+        (expand-divisors-low n
+            (loop
+                for i from 1 to sqr
+                when (zerop (rem n i)) collect i))))
+
+(defun sum-of-divisors-slow (n)
+"    Finds the sum of all divisors of n,
+    including 1 and itself.
+    #divisors #division #sum"
+    (apply '+ (divisors-list n)))
+
+(defun sum-of-divisors (n &key primes (sqr (isqrt n)))
+"    Finds the sum of all divisors of n,
+    including 1 and itself.
+    #divisors #division #sum"
+    (+ 
+        (loop
+            for i from 1 to sqr
+            when (zerop (rem n i)) sum (+ i (floor n i)))
+        (if (= n (* sqr sqr)) (- sqr) 0)))
+
+(defun sum-of-proper-divisors (n)
+"    Finds the sum of the proper divisors of n,
+    that means, the divirors of n except itself.
+    #divisors #division #proper #sum"
+    (- (sum-of-divisors n) n))
+
+(defun is-amicable (n &aux (sum-of-pp (sum-of-proper-divisors n)))
+"    Checks if a number is amicable.
+    If d(n) is the sum of proper divisors of n, and
+    d(n)!=n, and d(d(n))==n, then n and d(n) are
+    an amicable pair and each of them is an amicable number.
+    #sum #divisors #amicable"
+    (and (/= n sum-of-pp) (= n (sum-of-proper-divisors sum-of-pp))))
+
+(defun sum-of-amicables-up-to (limit)
+"    Gives the sum of all the amicable numbers
+    up to the given limit non-inclusive.
+    #amicable #sum"
+    (loop
+        for i from 1 to (1- limit)
+        when (is-amicable i) sum i))
 
 (defun number-of-divisors (n &key primes (sqr (isqrt n)))
 "    Finds the number of all integers that divide n,
