@@ -381,6 +381,11 @@
 (defun sum-of-divisors (n &key primes (sqr (isqrt n)))
 "    Finds the sum of all divisors of n,
     including 1 and itself.
+	NOTE FOR POSSIBLE FUTURE REIMPLEMENTATION:
+    If the prime factorization of n is n = Π(k...)pk^ak
+	where the pk are the distinct prime factors and the ak
+	are the positive integer exponents, the sum of all the
+    positive integer factors is Π(k...)[Σ(i=0..ak)pk^i].
     #divisors #division #sum"
     (+ 
         (loop
