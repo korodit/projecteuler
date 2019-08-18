@@ -158,7 +158,7 @@ NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-
 The use of \"and\" when writing out numbers is in compliance with British usage.
 ")
 
-'((math::max-sum-top-bottom-triangle (read-lists-from-stream (make-string-input-stream (fetch-input-string 18))))
+'((math::max-sum-top-bottom-triangle (read-lists-from-stream #'parse-integer (make-string-input-stream (fetch-input-string 18))))
 "Problem 18
 By starting at the top of the triangle below and moving to adjacent numbers on the row below, the maximum total from top to bottom is 23.
    3
@@ -199,6 +199,24 @@ If d(a) = b and d(b) = a, where a ≠ b, then a and b are an amicable pair and e
 For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 and 110; therefore d(220) = 284.
 The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
 Evaluate the sum of all the amicable numbers under 10000.
+")
+
+'((math::sum-mult-by-index (map 'vector #'math::uppercase-string-alpha-value (sort (math::list-to-1d-array (car (read-lists-from-stream #'read-from-string (make-string-input-stream (fetch-input-string 22))))) #'string<)))
+"Problem 22
+Using names.txt (right click and 'Save Link/Target As...'), a 46K text file containing over five-thousand first names,
+begin by sorting it into alphabetical order. Then working out the alphabetical value for each name, multiply this value
+by its alphabetical position in the list to obtain a name score.
+
+For example, when the list is sorted into alphabetical order, COLIN, which is worth 3 + 15 + 12 + 9 + 14 = 53,
+is the 938th name in the list. So, COLIN would obtain a score of 938 × 53 = 49714.
+
+What is the total of all the name scores in the file?
+Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
+If d(a) = b and d(b) = a, where a ≠ b, then a and b are an amicable pair and each of a and b are called amicable numbers.
+For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 and 110; therefore d(220) = 284.
+The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
+Evaluate the sum of all the amicable numbers under 10000.
+(Names are in input file 22)
 ")
 
 ))

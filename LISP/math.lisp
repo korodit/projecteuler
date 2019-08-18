@@ -1,4 +1,4 @@
-(defpackage :math (:use :cl))
+ (defpackage :math (:use :cl))
 
 (in-package :math)
 
@@ -51,6 +51,12 @@
                     while (<= j upper_bound)
                     do (setf (aref arr j) nil))
         finally (return (values arr num))))
+
+(defun list-to-1d-array (lst)
+"    Takes a list and created a 1d array with its elements.
+    #array #list"
+	(make-array (length lst) :initial-contents lst))
+
 
 (defun prime-sieve-list (upper_bound)
 "    Creates a list with all the primes lesser or equal to upper bound.
@@ -596,6 +602,23 @@ limitations."
             for (weekday month year) = (funcall stepper)
             until (and (equal month to-month) (equal year to-year))
             count (equal weekday 0))))
+
+(defun uppercase-string-alpha-value (ustr)
+"    Takes an uppercase word and gives its alphabetical value.
+    The alphabetical value is the sum of the positions of its letters.
+    A has position 1 and Z has position 26.
+    #sum #uppercase #alphabetical #value #position #string #letters #words"
+  (apply '+ (map 'list (lambda (letter) (1+ (- (char-code letter) (char-code #\A))) ) ustr)))
+
+(defun sum-mult-by-index (lst)
+"    Takes a list of integers, multiplies each element with its index (first element has index 1)
+    and then sums all of these results.
+    #sum #mult #index"
+;; IMPORTANT! Reduce function assumes that the accumulator is given first and the curr value second.
+;; THAT IS NOT GUARANTEED BY THE STANDARD
+  (car (reduce #'(lambda (&optional (acc (cons 0 0)) (curr 0) &aux (preval (car acc)) (index (cdr acc))) (cons (+ preval (* index curr)) (1+ index))) lst :initial-value (cons 0 1))))
+
+
 ))
 
 (defun doclist (&key export)
