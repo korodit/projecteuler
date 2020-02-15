@@ -1,0 +1,10 @@
+Adding directories to PATH:
+PATH += /home/orestarod/Projects/emsdk
+PATH += /home/orestarod/Projects/emsdk/upstream/emscripten
+PATH += /home/orestarod/Projects/emsdk/node/12.9.1_64bit/bin
+
+Setting environment variables:
+EMSDK = /home/orestarod/Projects/emsdk
+EM_CONFIG = /home/orestarod/.emscripten
+EMSDK_NODE = /home/orestarod/Projects/emsdk/node/12.9.1_64bit/bin/node
+

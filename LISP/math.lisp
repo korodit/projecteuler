@@ -618,6 +618,21 @@ limitations."
 ;; THAT IS NOT GUARANTEED BY THE STANDARD
   (car (reduce #'(lambda (&optional (acc (cons 0 0)) (curr 0) &aux (preval (car acc)) (index (cdr acc))) (cons (+ preval (* index curr)) (1+ index))) lst :initial-value (cons 0 1))))
 
+(defun complex-to-polar (cnum)
+"    Takes a complex number, and returns a cons, whose head is the absolute value of the complex
+    number, and it tail is its angle in degrees.
+    #complex #polar"
+    (cons (abs cnum) (/ (* (phase cnum) 360) (* 2 pi))))
+
+(defun degrees-to-radians (deg)
+"    Takes a degree value "
+    (* 2 pi (/ deg 360)))
+
+(defun polar-to-complex (polar &aux (abs-val (car polar)) (deg (cdr polar)))
+"    Takes a cons, whose head is the absolute value of a complex number, and its tail is its
+    angle in degrees, and returns a proper complex number value."    
+    (complex (* abs-val (cos (degrees-to-radians deg))) (* abs-val (sin (degrees-to-radians deg)))))
+
 
 ))
 
